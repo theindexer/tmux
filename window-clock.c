@@ -46,7 +46,7 @@ struct window_clock_mode_data {
 	struct event		timer;
 };
 
-const char window_clock_table[14][5][5] = {
+const char window_clock_table[15][5][5] = {
 	{ { 1,1,1,1,1 }, /* 0 */
 	  { 1,0,0,0,1 },
 	  { 1,0,0,0,1 },
@@ -117,6 +117,11 @@ const char window_clock_table[14][5][5] = {
 	  { 1,0,1,0,1 },
 	  { 1,0,0,0,1 },
 	  { 1,0,0,0,1 } },
+	{ { 0,0,0,0,1 }, /* / */
+	  { 0,0,0,1,0 },
+	  { 0,0,1,0,0 },
+	  { 0,1,0,0,0 },
+	  { 1,0,0,0,0 } },
 };
 
 void
@@ -219,7 +224,7 @@ window_clock_draw_screen(struct window_pane *wp)
 		else
 			strlcat(tim, "AM", sizeof tim);
 	} else
-		strftime(tim, sizeof tim, "%H:%M", tm);
+		strftime(tim, sizeof tim, "%m/%d %H:%M", tm);
 
 	screen_write_clearscreen(&ctx);
 
@@ -254,6 +259,8 @@ window_clock_draw_screen(struct window_pane *wp)
 			idx = 12;
 		else if (*ptr == 'M')
 			idx = 13;
+        else if (*ptr == '/')
+            idx = 14;
 		else {
 			x += 6;
 			continue;
