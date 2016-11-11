@@ -46,7 +46,7 @@ struct window_clock_mode_data {
 	struct event		timer;
 };
 
-const char window_clock_table[15][5][5] = {
+const char window_clock_table[22][5][5] = {
 	{ { 1,1,1,1,1 }, /* 0 */
 	  { 1,0,0,0,1 },
 	  { 1,0,0,0,1 },
@@ -122,6 +122,41 @@ const char window_clock_table[15][5][5] = {
 	  { 0,0,1,0,0 },
 	  { 0,1,0,0,0 },
 	  { 1,0,0,0,0 } },
+	{ { 1,1,1,1,1 }, /* S */
+	  { 1,0,0,0,1 },
+	  { 1,1,1,1,1 },
+	  { 1,0,0,0,1 },
+	  { 1,1,1,1,1 } },
+	{ { 1,1,1,1,1 }, /* M */
+	  { 1,0,0,0,1 },
+	  { 1,1,1,1,1 },
+	  { 1,0,0,0,1 },
+	  { 1,0,0,0,1 } },
+    { { 0,0,1,0,0 }, /* T */
+      { 1,0,1,0,1 },
+      { 0,0,1,0,0 },
+      { 0,1,1,1,0 },
+      { 1,0,0,0,1 } },
+    { { 0,0,1,0,0 }, /* W */
+      { 1,1,1,0,1 },
+      { 0,1,1,1,0 },
+      { 1,0,1,0,1 },
+      { 0,0,1,0,0 } },
+    { { 0,0,1,0,0 }, /* R */
+      { 1,1,1,1,1 },
+      { 0,1,1,1,0 },
+      { 1,0,1,0,1 },
+      { 0,0,0,0,0 } },
+    { { 0,1,1,1,0 }, /* F */
+      { 1,1,1,1,1 },
+      { 0,0,1,0,0 },
+      { 0,0,1,0,0 },
+      { 1,1,1,1,1 } },
+    { { 0,0,1,0,0 }, /* S */
+      { 0,0,1,0,0 },
+      { 1,1,1,1,1 },
+      { 0,0,1,0,0 },
+      { 1,1,1,1,1 } },
 };
 
 void
@@ -223,8 +258,9 @@ window_clock_draw_screen(struct window_pane *wp)
 			strlcat(tim, "PM", sizeof tim);
 		else
 			strlcat(tim, "AM", sizeof tim);
-	} else
-		strftime(tim, sizeof tim, "%m/%d %H:%M", tm);
+	} else {
+		strftime(tim, sizeof tim, "%m/%d (%w)  %H:%M", tm);
+    }
 
 	screen_write_clearscreen(&ctx);
 
@@ -249,7 +285,11 @@ window_clock_draw_screen(struct window_pane *wp)
 	memcpy(&gc, &grid_default_cell, sizeof gc);
 	colour_set_bg(&gc, colour);
 	for (ptr = tim; *ptr != '\0'; ptr++) {
-		if (*ptr >= '0' && *ptr <= '9')
+        if (*ptr == '(') {
+            ptr++;
+            idx = *ptr - '0' + 15;
+            ptr+=2;
+        } else if (*ptr >= '0' && *ptr <= '9')
 			idx = *ptr - '0';
 		else if (*ptr == ':')
 			idx = 10;

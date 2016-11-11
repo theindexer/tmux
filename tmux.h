@@ -2091,7 +2091,7 @@ u_int		 layout_set_previous(struct window *);
 
 /* window-clock.c */
 extern const struct window_mode window_clock_mode;
-extern const char window_clock_table[15][5][5];
+extern const char window_clock_table[22][5][5];
 
 /* window-copy.c */
 extern const struct window_mode window_copy_mode;
